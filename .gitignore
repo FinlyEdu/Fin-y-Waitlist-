@@ -1,0 +1,18 @@
+node_modules
+dist
+*.local
+
+# Env files hold the waitlist endpoint; keep the secret-free template tracked.
+.env
+.env.*
+!.env.example
+
+.DS_Store
+
+# Local Claude Code launch config (machine-specific absolute paths).
+.claude/
+
+.dev.vars
+
+# Packaged builds handed over for manual upload.
+*.zip

@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* fin!y brand tokens. Kept as variables so the palette can be retuned in
+       one place, the way the main app does it. */
+    --paper: #FFFFFF;
+    --ink: #1A1A1A;
+    --vermillion: #28C76F;
+    --border: #E9E7E4;
+    --motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Fredoka', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.021em;
+  }
+}
+
+@layer utilities {
+  /* Sub-pixel borders read as a drawn line rather than a box edge. */
+  .hairline { border-width: 0.5px; }
+  .font-mono-meta { font-family: 'Fredoka', ui-sans-serif, system-ui, sans-serif; }
+}
+
+::selection { background: var(--vermillion); color: var(--paper); }
+
+/* The approved fin!y wordmark artwork. The asset carries real transparency,
+   so it needs no blend mode to sit on a surface, and the light variant can be
+   flattened to white for dark backgrounds. */
+.finy-wordmark {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+.finy-wordmark--light { filter: brightness(0) invert(1); }
+
+/* Waitlist — the confirmation swaps in for the input, so it announces itself
+   with a short settle rather than appearing hard. */
+@keyframes waitlistSuccessIn {
+  from { opacity: 0; transform: translateY(6px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes waitlistCheckPop {
+  0% { transform: scale(.4); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pennyFloat {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+.waitlist-success { animation: waitlistSuccessIn 340ms var(--motion-ease-out) both; }
+.waitlist-success-check { animation: waitlistCheckPop 420ms var(--motion-ease-out) 90ms both; }
+.hero-rise { animation: heroRise 620ms var(--motion-ease-out) both; }
+.penny-float { animation: pennyFloat 6s ease-in-out infinite; }
+
+/* Penny's live layers. The artwork and the SVG monocle share .live-penny-body,
+   the single element the motion clock writes transforms to, so a lean can
+   never slide the eye off the gem.
+
+   Position and display go through :where() so they carry no specificity — a
+   caller's own utilities always win, which is what lets the hero keep its
+   `absolute`. */
+:where(.live-penny) { position: relative; display: inline-block; }
+/* Origin low in the gem so the landing squash spreads from her base. */
+.live-penny-body { display: block; transform-origin: 50% 78%; will-change: transform; }
+.live-penny-img { display: block; width: 100%; height: auto; user-select: none; }
+.live-penny-eye { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* The pause before Penny's answer. Staggered by inline animation-delay. */
+@keyframes pennyTypingDot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+.penny-typing-dot { animation: pennyTypingDot 1.1s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .waitlist-success,
+  .waitlist-success-check,
+  .hero-rise,
+  .penny-typing-dot,
+  .penny-float { animation: none !important; }
+}
+
+/* The narration bubble on the market card. A short settle when the text
+   changes, so a new line arrives rather than snapping into place. */
+@keyframes marketBubbleIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.market-bubble { animation: marketBubbleIn 420ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .market-bubble { animation: none !important; }
+}

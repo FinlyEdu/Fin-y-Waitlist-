@@ -1,0 +1,43 @@
+# Netlify build for the fin!y waitlist.
+#
+# Site settings should point at repo Evan1108-Coder/finly, branch `waitlist`,
+# with no base directory — this project sits at the root of that branch.
+#
+# VITE_WAITLIST_ENDPOINT must be set in Netlify's own environment variables
+# (Site configuration → Environment variables). Vite inlines it at build time,
+# so changing it needs a redeploy, not just a save.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 6 wants a modern Node; pin it so a Netlify default bump can't
+  # silently change the build.
+  NODE_VERSION = "20"
+
+# One page, no client-side router. Serving it for unknown paths means a
+# mistyped URL still shows the waitlist rather than a 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Vite fingerprints these filenames, so they can be cached hard and forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The HTML must not be cached, or a redeploy keeps serving the old asset names.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"

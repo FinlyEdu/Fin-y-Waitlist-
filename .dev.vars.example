@@ -1,0 +1,12 @@
+# Copy to .dev.vars for `npx wrangler pages dev`. Never commit .dev.vars.
+# In production these are set in Cloudflare Pages -> Settings -> Environment
+# variables, NOT in this repo.
+
+SUPABASE_URL=https://rviibqejbdtgkxvmzbxf.supabase.co
+# Service-role key. Server-side only - it bypasses row-level security and can
+# read or delete every row. It must never appear in a VITE_ variable, because
+# anything VITE_ is inlined into the browser bundle.
+SUPABASE_SERVICE_ROLE_KEY=
+TURNSTILE_SECRET_KEY=
+# Optional: the Apps Script /exec URL that emails the confirmation.
+CONFIRMATION_ENDPOINT=
